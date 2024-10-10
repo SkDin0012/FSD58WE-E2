@@ -1,7 +1,16 @@
 Endpoints:
 /register
 /login
-/pay
-/api/auth
+/api/users'
 /api/appointments
-/api/payments
+/api/session-notes
+/api/payments', paymentRoutes
+
+pages:
+header
+Home
+login
+Register
+payment 
+appointments
+session-notes
