@@ -1,0 +1,7 @@
+Endpoints:
+/register
+/login
+/pay
+/api/auth
+/api/appointments
+/api/payments
