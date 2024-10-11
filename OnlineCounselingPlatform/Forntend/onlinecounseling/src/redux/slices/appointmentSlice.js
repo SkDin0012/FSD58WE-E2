@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const API_URL = 'http://localhost:5111/api/appointments';
+
 const initialState = {
     appointments: [],
     loading: false,
@@ -8,22 +10,38 @@ const initialState = {
 };
 
 export const createAppointment = createAsyncThunk('appointment/create', async (appointmentData, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const token = state.user.token; 
+
     try {
-        const response = await axios.post('/api/appointments', appointmentData);
+        const response = await axios.post(`${API_URL}/create`, appointmentData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || 'An error occurred');
     }
 });
 
-export const fetchAppointments = createAsyncThunk('appointment/fetch', async (_, thunkAPI) => {
+export const fetchAppointments = createAsyncThunk('appointment/getsd', async (_, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const token = state.user.token; 
+
     try {
-        const response = await axios.get('/api/appointments');
+        const response = await axios.get(`${API_URL}/getsd`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || 'An error occurred');
     }
 });
+
+
 
 const appointmentSlice = createSlice({
     name: 'appointment',
