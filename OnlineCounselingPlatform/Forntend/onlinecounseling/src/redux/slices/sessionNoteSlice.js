@@ -1,32 +1,36 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const API_URL = 'http://localhost:5111/api/session-notes';
+
 const initialState = {
     sessionNotes: [],
     loading: false,
     error: null,
 };
 
-export const createSessionNote = createAsyncThunk('sessionNote/create', async (noteData, thunkAPI) => {
+export const createSessionNote = createAsyncThunk('sessionNotes/createSession', async (noteData, thunkAPI) => {
     try {
-        const response = await axios.post('/api/session-notes', noteData);
+        const response = await axios.post(`${API_URL}/createSession`, noteData); 
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response.data || 'Failed to create session note');
     }
 });
 
-export const fetchSessionNotes = createAsyncThunk('sessionNote/fetch', async (_, thunkAPI) => {
+export const fetchSessionNotes = createAsyncThunk('sessionNotes/getSessionNotes', async (_, thunkAPI) => {
     try {
-        const response = await axios.get('/api/session-notes');
+        const response = await axios.get(`${API_URL}/getSessionNotes`); 
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response.data || 'Failed to fetch session notes');
     }
 });
+
+
 
 const sessionNoteSlice = createSlice({
-    name: 'sessionNote',
+    name: 'sessionNotes',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
@@ -37,7 +41,7 @@ const sessionNoteSlice = createSlice({
             })
             .addCase(createSessionNote.fulfilled, (state, action) => {
                 state.loading = false;
-                state.sessionNotes.push(action.payload);
+                state.sessionNotes.push(action.payload); 
             })
             .addCase(createSessionNote.rejected, (state, action) => {
                 state.loading = false;
@@ -45,11 +49,11 @@ const sessionNoteSlice = createSlice({
             })
             .addCase(fetchSessionNotes.pending, (state) => {
                 state.loading = true;
-                state.error = null;
+                state.error = null; 
             })
             .addCase(fetchSessionNotes.fulfilled, (state, action) => {
                 state.loading = false;
-                state.sessionNotes = action.payload;
+                state.sessionNotes = action.payload; 
             })
             .addCase(fetchSessionNotes.rejected, (state, action) => {
                 state.loading = false;
